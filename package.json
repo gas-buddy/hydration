@@ -1,0 +1,36 @@
+{
+  "name": "@gasbuddy/hydration",
+  "version": "1.0.0",
+  "description": "Configuration oriented object construction",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "tap --node-arg=-r --node-arg=babel-register test/*.js",
+    "test-some": "tap --node-arg=-r --node-arg=babel-register",
+    "cover": "nyc --reporter=lcov npm test",
+    "lint": "eslint .",
+    "build": "babel src --out-dir build",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "gasbuddy",
+    "express",
+    "serialization",
+    "configuration"
+  ],
+  "author": "GasBuddy",
+  "license": "MIT",
+  "dependencies": {
+    "babel-plugin-transform-object-entries": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.16.0",
+    "babel-preset-gasbuddy": "^1",
+    "babel-register": "^6.16.3",
+    "bluebird": "^3.4.6",
+    "eslint": "^3.7.0",
+    "eslint-config-gasbuddy": "^1",
+    "nyc": "^8.3.0",
+    "tap": "^7.1.2"
+  }
+}
