@@ -54,7 +54,7 @@ tap.test('should hydrate and dehydrate', async (t) => {
       which: 2,
     },
     nostart: {
-      module: FakeNoStart
+      module: FakeNoStart,
     },
     disabled: {
       enabled: false,
