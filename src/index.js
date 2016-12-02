@@ -7,10 +7,31 @@ async function buildObject(context, name, config) {
     typeof context.externalContext.logger.info === 'function') {
     context.externalContext.logger.info('Hydrating module', { name });
   }
+
+  if (Array.isArray(config.module)) {
+    // A function with arguments
+    const [fn, ...args] = config.module;
+    if (typeof fn !== 'function') {
+      throw new Error(
+        `When using an array for the module parameter, the first element must be a function (${name})`
+      );
+    }
+    return await fn(...args);
+  }
+
+  // Otherwise, expect a constructor
   const ClassConstructor = config.module.default || config.module;
-  const obj = new (ClassConstructor)(context.externalContext, config);
-  context.allObjects.push(obj);
-  return await obj.start(context.externalContext);
+  if (typeof ClassConstructor === 'function') {
+    const obj = new (ClassConstructor)(context.externalContext, config);
+    context.allObjects.push(obj);
+    // If your object has a start method, call it and wait. Else just take the object
+    if (obj.start) {
+      return await obj.start(context.externalContext);
+    }
+    return obj;
+  }
+  // Not a function, so just return it.
+  return ClassConstructor;
 }
 
 async function hydrateRecursive(context, name, config, tree) {
@@ -41,7 +62,9 @@ async function hydrateRecursive(context, name, config, tree) {
       }
     }
   } else {
-    throw new Error(`Invalid configuration encountered: ${JSON.stringify(config, null, '\t')}`);
+    context.promise = context.promise.then(() => {
+      throw new Error(`Invalid configuration encountered: ${JSON.stringify(config, null, '\t')}`);
+    });
   }
 }
 

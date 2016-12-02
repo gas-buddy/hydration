@@ -1,12 +1,12 @@
 {
   "name": "@gasbuddy/hydration",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Configuration oriented object construction",
   "main": "build/index.js",
   "scripts": {
     "test": "tap --node-arg=-r --node-arg=babel-register test/*.js",
     "test-some": "tap --node-arg=-r --node-arg=babel-register",
-    "cover": "nyc --reporter=lcov npm test",
+    "cover": "nyc --reporter=lcov --reporter=text --check-coverage tap test",
     "lint": "eslint .",
     "build": "babel src --out-dir build",
     "prepublish": "npm run build"
@@ -32,5 +32,18 @@
     "eslint-config-gasbuddy": "^1",
     "nyc": "^8.3.0",
     "tap": "^7.1.2"
+  },
+  "nyc": {
+    "lines": 95,
+    "statements": 95,
+    "functions": 95,
+    "branches": 85,
+    "include": [
+      "src"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false
   }
 }

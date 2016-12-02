@@ -8,7 +8,9 @@ build:
       name: lint
       code: npm run lint
 
-    - npm-test
+    - script:
+      name: test with coverage
+      code: npm run cover
 
     - script:
       name: build
