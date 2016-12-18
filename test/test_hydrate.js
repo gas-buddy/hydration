@@ -14,6 +14,10 @@ class FakeNoStart {
   }
 }
 
+class FakeNullStart {
+  start() { return null; }
+}
+
 async function regularFunction(arg1, arg2) {
   await Promise.delay(1);
   return [arg1, arg2].join(',');
@@ -42,7 +46,12 @@ class FakeHydro {
 }
 
 tap.test('should hydrate and dehydrate', async (t) => {
-  const { allObjects, tree } = await h20.hydrate({ foo: true }, {
+  const { allObjects, tree } = await h20.hydrate({
+    foo: true,
+    logger: {
+      info() {},
+    },
+  }, {
     testing: {
       sub: {
         module: FakeHydro,
@@ -55,6 +64,9 @@ tap.test('should hydrate and dehydrate', async (t) => {
     },
     nostart: {
       module: FakeNoStart,
+    },
+    nullstart: {
+      module: FakeNullStart,
     },
     disabled: {
       enabled: false,
