@@ -15,7 +15,7 @@ class FakeNoStart {
 }
 
 class FakeNullStart {
-  start() { return null; }
+  start() { return this.itsNull; }
 }
 
 async function regularFunction(arg1, arg2) {
@@ -89,7 +89,7 @@ tap.test('should hydrate and dehydrate', async (t) => {
   t.ok(tree.disabled === null, 'Should have a ghost of disabled value');
   t.strictEquals(tree.testing.sub.id, 1, 'id should match');
   t.strictEquals(tree.top.id, 2, 'id should match');
-  t.strictEquals(allObjects.length, 3);
+  t.strictEquals(allObjects.length, 4);
   t.strictEquals(tree.object, 'fake module', 'object should pass as is');
   t.ok(tree.nostart instanceof FakeNoStart, 'object without start should work');
   t.strictEquals(tree.args, 'hello,world', 'array args should work');
