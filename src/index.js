@@ -1,4 +1,4 @@
-async function buildObject(context, name, config) {
+async function buildObject(context, name, config, tree) {
   if (!config.enabled && 'enabled' in config) {
     return null;
   }
@@ -22,11 +22,11 @@ async function buildObject(context, name, config) {
   // Otherwise, expect a constructor
   const ClassConstructor = config.module.default || config.module;
   if (typeof ClassConstructor === 'function') {
-    const obj = new (ClassConstructor)(context.externalContext, config);
+    const obj = new (ClassConstructor)(context.externalContext, config, tree);
     context.allObjects.push(obj);
     // If your object has a start method, call it and wait. Else just take the object
     if (obj.start) {
-      return await obj.start(context.externalContext);
+      return await obj.start(context.externalContext, tree);
     }
     return obj;
   }
@@ -42,7 +42,7 @@ async function hydrateRecursive(context, name, config, tree) {
   } else if (typeof config === 'object' && !Array.isArray(config)) {
     for (const [key, subConfig] of Object.entries(config)) {
       if (subConfig.module) {
-        const buildResult = buildObject(context, key, subConfig);
+        const buildResult = buildObject(context, key, subConfig, tree);
         if (buildResult) {
           // Initialize in parallel by just pushing a promise and fixing the values when done
           const valuePromise = Promise.resolve(buildResult)
@@ -52,9 +52,11 @@ async function hydrateRecursive(context, name, config, tree) {
                 context.externalContext.logger.info('Completed hydration', { key });
               }
               tree[key] = value;
+              return value;
             });
           // Nobody is done until we are all done
           context.promise = context.promise.then(() => valuePromise);
+          tree[key] = valuePromise;
         }
       } else {
         tree[key] = {};
