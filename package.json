@@ -6,7 +6,10 @@
   "scripts": {
     "test": "tap --node-arg=-r --node-arg=babel-register test/*.js",
     "test-some": "tap --node-arg=-r --node-arg=babel-register",
-    "cover": "cross-env BABEL_ENV=test tap --nyc-arg=--check-coverage --cov --coverage-report=lcov test/test_*.js",
+    "cover": "cross-env BABEL_ENV=test nyc tap test/test_*.js && nyc check-coverage && nyc report --reporter=text",
+    "ci-test": "cross-env NODE_ENV=test nyc tap -Rtap test/test_*.js -b | tee .tap_output | tap -Rspec -",
+    "ci-cover": "nyc check-coverage",
+    "ci-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",
     "build": "babel src --out-dir build",
     "prepublish": "npm run build"
@@ -31,7 +34,7 @@
     "cross-env": "^3.1.3",
     "eslint": "^3.7.0",
     "eslint-config-gasbuddy": "^1",
-    "tap": "^10"
+    "tap": "^9"
   },
   "nyc": {
     "lines": 95,
@@ -44,6 +47,10 @@
     "require": [
       "babel-register"
     ],
-    "sourceMap": false
+    "sourceMap": false,
+    "instrument": false,
+    "reporter": [
+      "lcov"
+    ]
   }
 }
