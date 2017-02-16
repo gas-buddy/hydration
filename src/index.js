@@ -69,7 +69,8 @@ function hydrateRecursive(context, name, config, tree, propertyTarget) {
         if (propertyTarget) {
           propertyTarget[key] = {};
         }
-        hydrateRecursive(context, key, subConfig, tree[key], propertyTarget ? propertyTarget[key] : null);
+        hydrateRecursive(context, key, subConfig, tree[key],
+          propertyTarget ? propertyTarget[key] : null);
       }
     }
   } else {
