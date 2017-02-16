@@ -34,15 +34,15 @@ async function buildObject(context, name, config, tree) {
   return ClassConstructor;
 }
 
-async function hydrateRecursive(context, name, config, tree) {
+async function hydrateRecursive(context, name, config, tree, target) {
   if (Array.isArray(config)) {
     for (const sub of config) {
-      hydrateRecursive(context, name, sub, tree);
+      hydrateRecursive(context, name, sub, tree, target);
     }
   } else if (typeof config === 'object' && !Array.isArray(config)) {
     for (const [key, subConfig] of Object.entries(config)) {
       if (subConfig.module) {
-        const buildResult = buildObject(context, key, subConfig, tree);
+        const buildResult = buildObject(context, key, subConfig, tree, target);
         if (buildResult) {
           // Initialize in parallel by just pushing a promise and fixing the values when done
           const valuePromise = Promise.resolve(buildResult)
@@ -52,15 +52,24 @@ async function hydrateRecursive(context, name, config, tree) {
                 context.externalContext.logger.info('Completed hydration', { key });
               }
               tree[key] = value;
+              if (target) {
+                target[key] = value;
+              }
               return value;
             });
           // Nobody is done until we are all done
           context.promise = context.promise.then(() => valuePromise);
           tree[key] = valuePromise;
+          if (target) {
+            target[key] = valuePromise;
+          }
         }
       } else {
         tree[key] = {};
-        hydrateRecursive(context, key, subConfig, tree[key]);
+        if (target) {
+          target[key] = {};
+        }
+        hydrateRecursive(context, key, subConfig, tree[key], target ? target[key] : null);
       }
     }
   } else {
@@ -84,7 +93,7 @@ async function hydrateRecursive(context, name, config, tree) {
  * creation of other things, but they need to handle teardown rather
  * than each of their generated objects)
  */
-export async function hydrate(externalContext, config) {
+export async function hydrate(externalContext, config, target) {
   const tree = {};
   const allObjects = [];
   const context = {
@@ -92,7 +101,7 @@ export async function hydrate(externalContext, config) {
     externalContext,
     promise: Promise.resolve(),
   };
-  hydrateRecursive(context, 'root', config, tree);
+  hydrateRecursive(context, 'root', config, tree, target);
   await context.promise;
   return { tree, allObjects };
 }
