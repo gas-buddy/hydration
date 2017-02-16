@@ -34,7 +34,7 @@ async function buildObject(context, name, config, tree) {
   return ClassConstructor;
 }
 
-async function hydrateRecursive(context, name, config, tree, target) {
+function hydrateRecursive(context, name, config, tree, target) {
   if (Array.isArray(config)) {
     for (const sub of config) {
       hydrateRecursive(context, name, sub, tree, target);
