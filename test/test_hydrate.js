@@ -46,6 +46,7 @@ class FakeHydro {
 }
 
 tap.test('should hydrate and dehydrate', async (t) => {
+  const inProc = {};
   const { allObjects, tree } = await h20.hydrate({
     foo: true,
     logger: {
@@ -82,8 +83,9 @@ tap.test('should hydrate and dehydrate', async (t) => {
         'world',
       ],
     },
-  });
+  }, inProc);
 
+  t.ok(inProc.testing, 'Should save to target');
   t.ok(tree.testing, 'Should have a testing key');
   t.ok(tree.testing.sub, 'Should have testing.sub');
   t.ok(tree.disabled === null, 'Should have a ghost of disabled value');
