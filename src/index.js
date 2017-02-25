@@ -26,7 +26,7 @@ async function buildObject(context, name, config, tree) {
     context.allObjects.push(obj);
     // If your object has a start method, call it and wait. Else just take the object
     if (obj.start) {
-      return await obj.start(context.externalContext, tree);
+      return await Promise.resolve().then(() => obj.start(context.externalContext, tree));
     }
     return obj;
   }
