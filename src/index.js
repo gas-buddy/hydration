@@ -26,7 +26,13 @@ async function buildObject(context, name, config, tree) {
     context.allObjects.push(obj);
     // If your object has a start method, call it and wait. Else just take the object
     if (obj.start) {
-      return await obj.start(context.externalContext, tree);
+      // The odd-seeming Promise.resolve/then here is because we can't execute obj.start
+      // synchronously. We need all objects to be constructed and put in their position
+      // in the object hierarchy BEFORE start is called, because the current API contract
+      // is that you can wait on dependencies by resolving their value. In other words, in
+      // your start method, you can Promise.resolve(myobject.hydratedThing) and then you
+      // will run after that thing has started.
+      return await Promise.resolve().then(() => obj.start(context.externalContext, tree));
     }
     return obj;
   }
@@ -100,6 +106,8 @@ export async function hydrate(externalContext, config, target) {
   const context = {
     allObjects,
     externalContext,
+    // Object starts will chain off this promise, giving us
+    // something we can wait on for overall completion
     promise: Promise.resolve(),
   };
   hydrateRecursive(context, 'root', config, tree, target);
