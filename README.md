@@ -2,6 +2,7 @@ hydration
 =========
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/gas-buddy/hydration.svg)](https://greenkeeper.io/)
+[![wercker status](https://app.wercker.com/status/a5428878e57b34ee0e4cd2fa06938ed5/s/master "wercker status")](https://app.wercker.com/project/byKey/a5428878e57b34ee0e4cd2fa06938ed5)
 
 This module allows runtime object creation from configuration files. It is a part of our
 microservices framework. Whereas express-participating things have [meddleware](https://github.com/gas-buddy/meddleware)
