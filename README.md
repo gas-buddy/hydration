@@ -1,6 +1,8 @@
 hydration
 =========
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/gas-buddy/hydration.svg)](https://greenkeeper.io/)
+
 This module allows runtime object creation from configuration files. It is a part of our
 microservices framework. Whereas express-participating things have [meddleware](https://github.com/gas-buddy/meddleware)
 which will instantiate and wire up handlers into express. hydration is an analog to that for things that are
