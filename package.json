@@ -28,7 +28,7 @@
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-core": "^6.16.0",
-    "babel-preset-gasbuddy": "^1",
+    "babel-preset-gasbuddy": "^2",
     "babel-register": "^6.16.3",
     "bluebird": "^3.4.6",
     "cross-env": "^3.1.3",
