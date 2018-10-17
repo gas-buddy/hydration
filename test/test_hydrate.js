@@ -1,9 +1,6 @@
 import tap from 'tap';
 import assert from 'assert';
-import bluebird from 'bluebird';
 import * as h20 from '../src/index';
-
-global.Promise = bluebird;
 
 let finishedOne;
 let stopCount = 0;
@@ -19,7 +16,7 @@ class FakeNullStart {
 }
 
 async function regularFunction(arg1, arg2) {
-  await Promise.delay(1);
+  await new Promise(accept => setTimeout(accept, 1));
   return [arg1, arg2].join(',');
 }
 
@@ -33,14 +30,14 @@ class FakeHydro {
   async start(context) {
     assert(!finishedOne, 'Should start in parallel');
     assert(context.foo, 'Should get context');
-    await Promise.delay(10);
+    await new Promise(accept => setTimeout(accept, 10));
     return { id: this.which };
   }
 
   async stop(context) {
     assert(context.foo, 'Should get context');
     assert(this.which, 'Should have a "which" property');
-    await Promise.delay(10);
+    await new Promise(accept => setTimeout(accept, 10));
     stopCount += 1;
   }
 }

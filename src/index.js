@@ -3,8 +3,8 @@ async function buildObject(context, name, config, tree) {
     return null;
   }
   // Module config. Create the object and call start on it
-  if (context.externalContext.logger &&
-    typeof context.externalContext.logger.info === 'function') {
+  if (context.externalContext.logger
+    && typeof context.externalContext.logger.info === 'function') {
     context.externalContext.logger.info('Hydrating module', { name });
   }
 
@@ -13,10 +13,10 @@ async function buildObject(context, name, config, tree) {
     const [fn, ...args] = config.module;
     if (typeof fn !== 'function') {
       throw new Error(
-        `When using an array for the module parameter, the first element must be a function (${name})`
+        `When using an array for the module parameter, the first element must be a function (${name})`,
       );
     }
-    return await fn(...args);
+    return fn(...args);
   }
 
   // Otherwise, expect a constructor
@@ -32,7 +32,7 @@ async function buildObject(context, name, config, tree) {
       // is that you can wait on dependencies by resolving their value. In other words, in
       // your start method, you can Promise.resolve(myobject.hydratedThing) and then you
       // will run after that thing has started.
-      return await Promise.resolve().then(() => obj.start(context.externalContext, tree));
+      return Promise.resolve().then(() => obj.start(context.externalContext, tree));
     }
     return obj;
   }
@@ -53,8 +53,8 @@ function hydrateRecursive(context, name, config, tree, propertyTarget) {
           // Initialize in parallel by just pushing a promise and fixing the values when done
           const valuePromise = Promise.resolve(buildResult)
             .then((value) => {
-              if (context.externalContext.logger &&
-                typeof context.externalContext.logger.info === 'function') {
+              if (context.externalContext.logger
+                && typeof context.externalContext.logger.info === 'function') {
                 context.externalContext.logger.info('Completed hydration', { key });
               }
               tree[key] = value;
@@ -116,9 +116,10 @@ export async function hydrate(externalContext, config, target) {
 }
 
 export async function dehydrate(externalContext, allObjects) {
-  for (const o of allObjects) {
-    if (o && typeof o.stop === 'function') {
-      await o.stop(externalContext);
+  return (allObjects || []).reduce((chain, item) => {
+    if (item && typeof item.stop === 'function') {
+      return chain.then(() => item.stop(externalContext));
     }
-  }
+    return chain;
+  }, Promise.resolve());
 }
