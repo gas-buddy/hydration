@@ -1,6 +1,6 @@
 {
   "name": "@gasbuddy/hydration",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Configuration oriented object construction",
   "main": "build/index.js",
   "scripts": {
@@ -24,13 +24,13 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/register": "^7.0.0",
-    "babel-preset-gasbuddy": "^5.3.0",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/register": "^7.4.4",
+    "babel-preset-gasbuddy": "^5.6.0",
     "cross-env": "^5.2.0",
-    "eslint-config-gasbuddy": "^5.0.3",
-    "tap": "^12.1.1"
+    "eslint-config-gasbuddy": "^5.3.0",
+    "tap": "^14.2.2"
   },
   "nyc": {
     "lines": 95,
